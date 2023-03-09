@@ -1,0 +1,6 @@
+cvae_metric:
+  ngc_job_id: 1000001
+  ckpt_key: iter27000_ep0_minADE0.60
+occupancy_metric:
+  ngc_job_id: 0000001
+  ckpt_key: iter62000_ep1_posErr0.71

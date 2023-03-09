@@ -1,0 +1,3 @@
+policy:  # nusc_dvae_ld10_lossMSE_ht10_ft20_dt0.1_yrl0.01_dynNone_rlTrue_2900693
+  ngc_job_id: 2900693
+  ckpt_key: 40000
