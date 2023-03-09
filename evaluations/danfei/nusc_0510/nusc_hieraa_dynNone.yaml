@@ -1,6 +1,0 @@
-planner:
-  ngc_job_id: 2852894
-  ckpt_key: 21000
-predictor:
-  ngc_job_id: 2854013
-  ckpt_key: 74000

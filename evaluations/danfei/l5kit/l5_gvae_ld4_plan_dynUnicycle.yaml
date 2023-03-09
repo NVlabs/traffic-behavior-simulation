@@ -1,6 +1,0 @@
-policy:  # l5kit_gvae_ld4_ht10_ft20_dt0.1_yrl0.01_2888950
-  ngc_job_id: 2888950
-  ckpt_key: 50000
-predictor:
-  ngc_job_id: 2862207
-  ckpt_key: 59000

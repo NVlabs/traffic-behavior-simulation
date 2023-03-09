@@ -1,6 +1,0 @@
-planner:  # nusc_sp_ht10_ft20_dt0.1_yrl0.01_dynNone_rlFalse_2900612
-  ngc_job_id: 2900612
-  ckpt_key: iter40000
-policy:
-  ngc_job_id: 2854013
-  ckpt_key: 74000

@@ -1,6 +1,0 @@
-policy:  # l5kit_gan_ld2_ht10_ft20_dt0.1_yrl0.01_rlTrue_2894783
-  ngc_job_id: 2894783
-  ckpt_key: 80000
-predictor:
-  ngc_job_id: 2862207
-  ckpt_key: 59000

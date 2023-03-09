@@ -1,7 +1,6 @@
 import argparse
 import sys
 import os
-import socket
 
 import wandb
 import pytorch_lightning as pl
@@ -250,11 +249,7 @@ if __name__ == "__main__":
         "True to avoid unexpected stall when launching cloud experiments).",
     )
 
-    parser.add_argument(
-        "--on_ngc",
-        action="store_true",
-        help="whether running the script on ngc (this will change some behaviors like avoid writing into dataset)"
-    )
+
 
     parser.add_argument(
         "--debug", action="store_true", help="Debug mode, suppress wandb logging, etc."
@@ -284,11 +279,6 @@ if __name__ == "__main__":
     if args.wandb_project_name is not None:
         default_config.train.logging.wandb_project_name = args.wandb_project_name
 
-    if args.on_ngc:
-        ngc_job_id = socket.gethostname()
-        default_config.name = default_config.name + "_" + ngc_job_id
-
-    default_config.train.on_ngc = args.on_ngc
 
     if args.debug:
         # Test policy rollout

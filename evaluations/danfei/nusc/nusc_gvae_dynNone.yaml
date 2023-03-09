@@ -1,3 +1,0 @@
-policy:  # nusc_gvae_ld4_ht10_ft20_dt0.1_yrl0.01_dynNone_rlTrue_2900566
-  ngc_job_id: 2900566
-  ckpt_key: iter60000_ep3_valLoss

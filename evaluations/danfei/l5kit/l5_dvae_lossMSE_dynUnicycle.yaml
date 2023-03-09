@@ -1,6 +1,0 @@
-policy:  # l5kit_dvae_ld10_lossMSE_ht10_ft20_dt0.1_2870782
-  ngc_job_id: 2870782
-  ckpt_key: 51000
-predictor:
-  ngc_job_id: 2862207
-  ckpt_key: 59000

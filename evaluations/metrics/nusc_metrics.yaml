@@ -1,6 +1,0 @@
-cvae_metric:
-  ngc_job_id: "1000002"
-  ckpt_key: 13000
-occupancy_metric:
-  ngc_job_id: "0000003"
-  ckpt_key: 51000

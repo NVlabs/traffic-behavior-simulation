@@ -1,3 +1,0 @@
-policy:  # nusc_gvae_ld2_ht10_ft20_dt0.1_yrl0.01_dynNone_rlTrue_2900565
-  ngc_job_id: 2900565
-  ckpt_key: iter50000

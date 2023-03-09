@@ -1,6 +1,0 @@
-policy:
-  ngc_job_id: 2867432
-  ckpt_key: 44000
-predictor:
-  ngc_job_id: 2862207
-  ckpt_key: 59000

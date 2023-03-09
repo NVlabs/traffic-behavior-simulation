@@ -82,5 +82,3 @@ python scripts/evaluate.py \
   --eval_class BC \
   --render
 ```
-
-## Launch training runs on NGC

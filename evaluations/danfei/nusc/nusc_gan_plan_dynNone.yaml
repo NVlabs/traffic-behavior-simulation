@@ -1,6 +1,0 @@
-policy: # nusc_gan_ld1_ht10_ft20_dt0.1_yrl0.01_dynNone_rlTrue_2900571
-  ngc_job_id: 2900571
-  ckpt_key: 20000
-predictor:
-  ngc_job_id: 2854013
-  ckpt_key: 74000

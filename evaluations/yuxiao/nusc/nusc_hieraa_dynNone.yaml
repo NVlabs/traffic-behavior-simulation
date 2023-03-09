@@ -1,6 +1,0 @@
-planner:
-  ngc_job_id: 3000000
-  ckpt_key: iter62000
-predictor:
-  ngc_job_id: 3650300
-  ckpt_key: iter2000
