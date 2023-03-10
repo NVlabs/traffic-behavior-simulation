@@ -1,8 +1,5 @@
 import numpy as np
-try:
-    import jax.numpy as jnp
-except:
-    print("failed to import jax")
+
 import torch
 from tbsim.utils.tensor_utils import round_2pi
 from enum import IntEnum
@@ -177,10 +174,7 @@ def batch_rotate_2D(xy, theta):
         x1 = xy[..., 0] * np.cos(theta) - xy[..., 1] * np.sin(theta)
         y1 = xy[..., 1] * np.cos(theta) + xy[..., 0] * np.sin(theta)
         return np.concatenate((x1.reshape(-1, 1), y1.reshape(-1, 1)), axis=-1)
-    elif isinstance(xy,jnp.ndarray):
-        x1 = xy[..., 0] * jnp.cos(theta) - xy[..., 1] * jnp.sin(theta)
-        y1 = xy[..., 1] * jnp.cos(theta) + xy[..., 0] * jnp.sin(theta)
-        return jnp.concatenate((x1.reshape(-1, 1), y1.reshape(-1, 1)), axis=-1)
+
         
 
 
@@ -317,30 +311,7 @@ def batch_proj(x, line):
             delta_y,
             np.expand_dims(delta_psi, axis=-1),
         )
-    elif isinstance(x, jnp.ndarray):
-        delta = line[..., 0:2] - jnp.repeat(
-            x[..., np.newaxis, 0:2], line_length, axis=-2
-        )
-        dis = jnp.linalg.norm(delta, axis=-1)
-        idx0 = jnp.argmin(dis, axis=-1)
-        idx = idx0.reshape(*line.shape[:-2], 1, 1).repeat(line.shape[-1], axis=-1)
-        line_min = jnp.squeeze(jnp.take_along_axis(line, idx, axis=-2), axis=-2)
-        dx = x[..., None, 0] - line[..., 0]
-        dy = x[..., None, 1] - line[..., 1]
-        delta_y = -dx * jnp.sin(line_min[..., None, 2]) + dy * jnp.cos(
-            line_min[..., None, 2]
-        )
-        delta_x = dx * jnp.cos(line_min[..., None, 2]) + dy * jnp.sin(
-            line_min[..., None, 2]
-        )
-        # line_min[..., 0] += delta_x * np.cos(line_min[..., 2])
-        # line_min[..., 1] += delta_x * np.sin(line_min[..., 2])
-        delta_psi = round_2pi(x[..., 2] - line_min[..., 2])
-        return (
-            delta_x,
-            delta_y,
-            jnp.expand_dims(delta_psi, axis=-1),
-        )
+
 
 
 class CollisionType(IntEnum):

@@ -160,7 +160,7 @@ class RolloutLogger(object):
                             default_val = ti_k[-1]
                         if not all(elem.shape==ti_k[0].shape for elem in ti_k):
                             # requires padding
-                            if np.issubdtype(ti_k[0].dtype,np.floating):
+                            if np.issubdtype(ti_k[0].dtype,float):
                                 padding_value = np.nan
                             else:
                                 padding_value = 0
@@ -178,7 +178,7 @@ class RolloutLogger(object):
                         serialized[si][k].append(np.zeros_like(serialized[si][k][-1]))
                 if not all(elem.shape==serialized[si][k][0].shape for elem in serialized[si][k]):
                     # requires padding
-                    if np.issubdtype(serialized[si][k][0][0].dtype,np.floating):
+                    if np.issubdtype(serialized[si][k][0][0].dtype,float):
                         padding_value = np.nan
                     else:
                         padding_value = 0

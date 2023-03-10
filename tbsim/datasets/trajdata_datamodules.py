@@ -53,7 +53,7 @@ class UnifiedDataModule(pl.LightningDataModule):
                 "offset_frac_xy": data_cfg.raster_center,
                 "original_format": True,
             },
-            cache_location="/raid/local_cache" if self._train_config.on_ngc else "~/.unified_data_cache",
+            cache_location= "~/.unified_data_cache",
             verbose=False,
             max_agent_num = 1+data_cfg.other_agents_num,
             # max_neighbor_num = data_cfg.other_agents_num,

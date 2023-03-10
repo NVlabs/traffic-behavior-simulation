@@ -1,0 +1,6 @@
+planner:
+  ckpt_dir: <path-to-spatial-planner-checkpoint>
+  ckpt_key: <iterxxx>
+predictor:
+  ckpt_dir: <path-to-multiagent-predictor-checkpoint>
+  ckpt_key: <iterxxx>

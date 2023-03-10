@@ -42,7 +42,6 @@ class TrainConfig(Dict):
         ## Training parallelism (e.g., multi-GPU)
         self.parallel_strategy = "ddp_spawn"
 
-        self.on_ngc = False
 
 
 class EnvConfig(Dict):

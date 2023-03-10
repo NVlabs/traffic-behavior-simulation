@@ -94,7 +94,7 @@ class L5RasterizedDataModule(pl.LightningDataModule, L5BaseDatasetModule):
             self.train_dataset = EgoDataset(self._l5_config, train_zarr, self.rasterizer)
             self.valid_dataset = EgoDataset(self._l5_config, valid_zarr, self.rasterizer)
         else:
-            read_cached_mask = not self._train_config.on_ngc
+            read_cached_mask = True
             self.train_dataset = AgentDataset(self._l5_config, train_zarr, self.rasterizer, read_cached_mask=read_cached_mask)
             self.valid_dataset = AgentDataset(self._l5_config, valid_zarr, self.rasterizer, read_cached_mask=read_cached_mask)
 
@@ -147,6 +147,6 @@ class L5MixedDataModule(L5RasterizedDataModule):
             self.train_dataset = EgoDatasetMixed(self._l5_config, train_zarr, self.vectorizer, self.rasterizer)
             self.valid_dataset = EgoDatasetMixed(self._l5_config, valid_zarr, self.vectorizer, self.rasterizer)
         else:
-            read_cached_mask = not self._train_config.on_ngc
+            read_cached_mask = True
             self.train_dataset = AgentDatasetMixed(self._l5_config, train_zarr, self.vectorizer, self.rasterizer, read_cached_mask=read_cached_mask)
             self.valid_dataset = AgentDatasetMixed(self._l5_config, valid_zarr, self.vectorizer, self.rasterizer, read_cached_mask=read_cached_mask)

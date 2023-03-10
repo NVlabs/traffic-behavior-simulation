@@ -39,7 +39,6 @@ class MetricsComposer(object):
 class CVAEMetrics(MetricsComposer):
     def get_metrics(self, eval_config, perturbations=None, rolling=False, env="l5kit", **kwargs):
         ckpt_path, config_path = get_checkpoint(
-                ngc_job_id=eval_config.ckpt.cvae_metric.ngc_job_id,
                 ckpt_key=eval_config.ckpt.cvae_metric.ckpt_key,
                 ckpt_root_dir=self.ckpt_root_dir
             )
@@ -64,7 +63,6 @@ class CVAEMetrics(MetricsComposer):
 class OccupancyMetrics(MetricsComposer):
     def get_metrics(self, eval_config, perturbations = None, rolling=False, env="l5kit", **kwargs):
         ckpt_path, config_path = get_checkpoint(
-                ngc_job_id=eval_config.ckpt.occupancy_metric.ngc_job_id,
                 ckpt_key=eval_config.ckpt.occupancy_metric.ckpt_key,
                 ckpt_root_dir=self.ckpt_root_dir
             )

@@ -22,11 +22,11 @@ class NuscTrainConfig(TrainConfig):
         self.rollout.every_n_steps = 5000
 
         # training config
-        self.training.batch_size = 100
+        self.training.batch_size = 120
         self.training.num_steps = 200000
         self.training.num_data_workers = 8
 
-        self.save.every_n_steps = 1000
+        self.save.every_n_steps = 100
         self.save.best_k = 10
         
 
@@ -34,7 +34,7 @@ class NuscTrainConfig(TrainConfig):
         self.validation.enabled = True
         self.validation.batch_size = 32
         self.validation.num_data_workers = 6
-        self.validation.every_n_steps = 500
+        self.validation.every_n_steps = 60
         self.validation.num_steps_per_epoch = 50
 
 

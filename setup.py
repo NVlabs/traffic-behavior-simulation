@@ -19,8 +19,8 @@ setup(
         "numpy>=1.19.0",  # need to manually update numpy version to (1.21.4) due to conflict with l5kit's requirement
         "pytorch-lightning",
         "wandb",
-        "torch==1.13.1",
-        "torchvision==0.11.3",
+        "torch>=1.13.1",
+        "torchvision>=0.11.3",
         "pyemd",
         "h5py",
         "imageio-ffmpeg",
@@ -28,7 +28,8 @@ setup(
         "networkx",
         "casadi",
         "torchtext",  # weird pytorch-lightning dependency bug
-        "jax"
+        "pytorch-lightning",
+        "nuscenes-devkit",
     ],
     eager_resources=["*"],
     include_package_data=True,

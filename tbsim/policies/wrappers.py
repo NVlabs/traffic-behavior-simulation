@@ -125,9 +125,7 @@ class SamplingPolicyWrapper(Wrappers):
                 self.vector_maps[map_name] = self.mapAPI.get_map(map_name, scene_cache=None)
         vector_map = [self.vector_maps[map_name] for map_name in obs["map_names"]]
         
-        bs = int(obs["agent_hist"].shape[0]/17)
-        stop_flag = torch.tensor([0,0,0,1,1,1,1,1,1,0,0,0,0,1,1,0,0],device=ego_trajs.device).repeat(bs)
-        ego_trajs = ego_trajs*(1-stop_flag)[:,None,None,None]
+      
         action_idx = ego_sample_planning(
             ego_trajectories=ego_trajs,
             agent_trajectories=agent_pred_trajs,

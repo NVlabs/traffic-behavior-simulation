@@ -13,7 +13,7 @@ class EvaluationConfig(Dict):
         self.eval_class = ""
         self.seed = 0
         self.num_scenes_per_batch = 2
-        self.num_scenes_to_evaluate = 10
+        self.num_scenes_to_evaluate = 2
 
         self.num_episode_repeats = 1
         self.start_frame_index_each_episode = None  # if specified, should be the same length as num_episode_repeats
@@ -26,23 +26,19 @@ class EvaluationConfig(Dict):
         self.experience_hdf5_path = None
         self.results_dir = "results/"
 
-        self.ckpt.policy.ngc_job_id = None
+
         self.ckpt.policy.ckpt_dir = None
         self.ckpt.policy.ckpt_key = None
 
-        self.ckpt.planner.ngc_job_id = None
         self.ckpt.planner.ckpt_dir = None
         self.ckpt.planner.ckpt_key = None
 
-        self.ckpt.predictor.ngc_job_id = None
         self.ckpt.predictor.ckpt_dir = None
         self.ckpt.predictor.ckpt_key = None
 
-        self.ckpt.cvae_metric.ngc_job_id = None
         self.ckpt.cvae_metric.ckpt_dir = None
         self.ckpt.cvae_metric.ckpt_key = None
 
-        self.ckpt.occupancy_metric.ngc_job_id = None
         self.ckpt.occupancy_metric.ckpt_dir = None
         self.ckpt.occupancy_metric.ckpt_key = None
 
@@ -82,7 +78,7 @@ class EvaluationConfig(Dict):
 
         self.nusc.eval_scenes = np.arange(0,100).tolist()
         self.nusc.n_step_action = 2
-        self.nusc.num_simulation_steps = 200
+        self.nusc.num_simulation_steps = 10
         self.nusc.skip_first_n = 0
         
         self.drivesim.eval_scenes = np.arange(0,40).tolist()

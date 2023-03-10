@@ -8,12 +8,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import sys
-try:
-    from numba import jit
-except:
-    print("Numba not found")
-import jax.numpy as jnp
-import jax
+
 
 
 def recursive_dict_list_tuple_apply(x, type_func_dict, ignore_if_unspecified=False):
@@ -373,37 +368,6 @@ def to_numpy(x, ignore_if_unspecified=False):
         {
             torch.Tensor: f,
             np.ndarray: lambda x: x,
-            jnp.ndarray: lambda x:np.array(x),
-            type(None): lambda x: x,
-            str: lambda x: x,
-        },
-        ignore_if_unspecified=ignore_if_unspecified
-    )
-def to_jax(x, ignore_if_unspecified=False):
-    """
-    Converts all torch tensors in nested dictionary or list or tuple to
-    JAX (and leaves existing JAX arrays as-is), and returns
-    a new nested structure.
-
-    Args:
-        x (dict or list or tuple): a possibly nested dictionary or list or tuple
-        ignore_if_unspecified (bool): ignore an item if its type is unspecified by the type_func_dict
-
-    Returns:
-        y (dict or list or tuple): new nested dict-list-tuple
-    """
-
-    def f(tensor):
-        if tensor.is_cuda:
-            return jnp.array(tensor.detach().cpu().numpy())
-        else:
-            return jnp.array(tensor.detach().numpy())
-
-    return recursive_dict_list_tuple_apply(
-        x,
-        {
-            torch.Tensor: f,
-            np.ndarray: lambda x: jnp.array(x),
             type(None): lambda x: x,
             str: lambda x: x,
         },
@@ -645,9 +609,6 @@ def join_dimensions(x, begin_axis, end_axis):
                 x, begin_axis=b, end_axis=e, target_dims=[-1]
             ),
             np.ndarray: lambda x, b=begin_axis, e=end_axis: reshape_dimensions_single(
-                x, begin_axis=b, end_axis=e, target_dims=[-1]
-            ),
-            jnp.ndarray: lambda x, b=begin_axis, e=end_axis: reshape_dimensions_single(
                 x, begin_axis=b, end_axis=e, target_dims=[-1]
             ),
             type(None): lambda x: x,
@@ -1181,55 +1142,3 @@ def block_diag_from_cat(x):
     mat = torch.cat(slices, 1)
     return mat
 
-if "jax" in sys.modules:
-    # @jit
-    # def block_diag_from_cat_np(x):
-    #     """ convert a concatenated array to block diagonal
-
-    #     Args:
-    #         x (Union[torch.Tensor,np.ndarray]): [B,M,n,m]
-    #     Returns:
-    #         mat: [B,Mxn,Mxm]
-    #     """
-    #     if x.ndim==3:
-    #         M,n,m = x.shape
-    #         Id = np.eye(M)
-    #         slices = [np.kron(Id[i], x[i]) for i in range(M)]
-    #         mat = np.concatenate(slices, 0)
-    #     elif x.ndim==4:
-    #         bs,M,n,m = x.shape
-    #         Id = np.eye(M)
-    #         slices = [np.kron(Id[i], x[:, i].reshape(-1,m)).reshape(bs,n,m*M) for i in range(M)]
-    #         mat = np.concatenate(slices, 1)
-    #     return mat
-
-    def block_diag_from_cat_jnp(x):
-        """ convert a concatenated array to block diagonal
-
-        Args:
-            x (Union[torch.Tensor,np.ndarray]): [B,M,n,m]
-        Returns:
-            mat: [B,Mxn,Mxm]
-        """
-        # if x.ndim==3:
-        M,n,m = x.shape
-        Id = jnp.eye(M)
-        slices = [jnp.kron(Id[i], x[i]) for i in range(M)]
-        mat = jnp.concatenate(slices, 0)
-        # elif x.ndim==4:
-        #     bs,M,n,m = x.shape
-        #     Id = jnp.eye(M)
-        #     slices = [jnp.kron(Id[i], x[:, i].reshape(-1,m)).reshape(bs,n,m*M) for i in range(M)]
-        #     mat = jnp.concatenate(slices, 1)
-        return mat
-    block_diag_from_cat_jit3 = jax.jit(block_diag_from_cat_jnp)
-    block_diag_from_cat_jit4 = jax.vmap(block_diag_from_cat_jit3,0,0)
-    block_diag_from_cat_jit5 = jax.vmap(block_diag_from_cat_jit4,0,0)
-    
-    def block_diag_from_cat_jit(x):
-        if x.ndim==3:
-            return block_diag_from_cat_jit3(x)
-        elif x.ndim==4:
-            return block_diag_from_cat_jit4(x)
-        elif x.ndim==5:
-            return block_diag_from_cat_jit5(x)
