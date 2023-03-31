@@ -4,8 +4,6 @@ from tbsim.configs.base import ExperimentConfig
 
 from tbsim.algos.algos import (
     BehaviorCloning,
-    TransformerTrafficModel,
-    TransformerGANTrafficModel,
     VAETrafficModel,
     DiscreteVAETrafficModel,
     BehaviorCloningGC,
@@ -60,10 +58,6 @@ def algo_factory(config: ExperimentConfig, modality_shapes: dict):
         algo = OccupancyMetric(algo_config=algo_config, modality_shapes=modality_shapes)
     elif algo_name == "agent_predictor":
         algo = MATrafficModel(algo_config=algo_config, modality_shapes=modality_shapes)
-    elif algo_name == "TransformerPred":
-        algo = TransformerTrafficModel(algo_config=algo_config)
-    elif algo_name == "TransformerGAN":
-        algo = TransformerGANTrafficModel(algo_config=algo_config)
     elif algo_name == "gan":
         algo = GANTrafficModel(algo_config=algo_config, modality_shapes=modality_shapes)
     elif algo_name == "scept":

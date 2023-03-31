@@ -87,11 +87,11 @@ python scripts/train.py --dataset_path <path-to-lyft-data-directory> --config_na
 nuScenes dataset:
 First train a spatial planner:
 ```
-python scripts/train.py --dataset_path <path-to-lyft-data-directory> --config_name nusc_spatial_planner --debug
+python scripts/train.py --dataset_path <path-to-nuScenes-data-directory> --config_name nusc_spatial_planner --debug
 ```
 Then train a multiagent predictor:
 ```
-python scripts/train.py --dataset_path <path-to-lyft-data-directory> --config_name nusc_agent_predictor --debug
+python scripts/train.py --dataset_path <path-to-nuScenes-data-directory> --config_name nusc_agent_predictor --debug
 ```
 
 See the list of registered algorithms in `configs/registry.py`
@@ -138,3 +138,4 @@ python scripts/evaluate.py \
 ```
 
 Here your policy should be declared in `tbsim/evaluation/policy_composer.py`.
+

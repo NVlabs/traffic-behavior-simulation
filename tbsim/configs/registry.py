@@ -18,8 +18,6 @@ from tbsim.configs.algo_config import (
     BehaviorCloningECConfig,
     SpatialPlannerConfig,
     BehaviorCloningGCConfig,
-    TransformerPredConfig,
-    TransformerGANConfig,
     AgentPredictorConfig,
     VAEConfig,
     EBMMetricConfig,
@@ -98,19 +96,6 @@ EXP_CONFIG_REGISTRY["l5_tree"] = ExperimentConfig(
     registered_name="l5_tree",
 )
 
-EXP_CONFIG_REGISTRY["l5_transformer"] = ExperimentConfig(
-    train_config=L5KitTrainConfig(),
-    env_config=L5KitMixedEnvConfig(),
-    algo_config=TransformerPredConfig(),
-    registered_name="l5_transformer",
-)
-
-EXP_CONFIG_REGISTRY["l5_transformer_gan"] = ExperimentConfig(
-    train_config=L5KitTrainConfig(),
-    env_config=L5KitMixedEnvConfig(),
-    algo_config=TransformerGANConfig(),
-    registered_name="l5_transformer_gan",
-)
 
 EXP_CONFIG_REGISTRY["l5_ebm"] = ExperimentConfig(
     train_config=L5KitTrainConfig(),
