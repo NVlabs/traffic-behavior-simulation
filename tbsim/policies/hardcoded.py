@@ -1,26 +1,18 @@
-from os import device_encoding
 import numpy as np
-import pytorch_lightning as pl
 import torch
 from torch.nn.utils.rnn import pad_sequence
 from typing import Tuple, Dict
-from copy import deepcopy
 
-from tbsim.envs.base import BatchedEnv, BaseEnv
 import tbsim.utils.tensor_utils as TensorUtils
 import tbsim.dynamics as dynamics
 from tbsim.utils.l5_utils import get_current_states
 from tbsim.utils.batch_utils import batch_utils
 import tbsim.utils.lane_utils as LaneUtils
 from tbsim.algos.algo_utils import optimize_trajectories
-from tbsim.utils.geometry_utils import transform_points_tensor, calc_distance_map
-from l5kit.geometry import transform_points
+from tbsim.utils.geometry_utils import calc_distance_map
 from tbsim.utils.timer import Timers
-from tbsim.utils.planning_utils import ego_sample_planning
 from tbsim.policies.common import Action, Plan
 from tbsim.policies.base import Policy
-from tbsim.utils.ftocp import FTOCP
-import matplotlib.pyplot as plt
 
 try:
     from Pplan.Sampling.spline_planner import SplinePlanner
@@ -32,7 +24,7 @@ import tbsim.utils.planning_utils as PlanUtils
 import tbsim.utils.geometry_utils as GeoUtils
 from tbsim.utils.timer import Timers
 from pathlib import Path
-from trajdata import MapAPI, VectorMap
+from trajdata import MapAPI
 
 class OptimController(Policy):
     """An optimization-based controller"""
@@ -302,9 +294,7 @@ class ContingencyPlanner(Policy):
         fut_avail_b = list()
         agent_from_center_b = list()
         center_from_agent_b = list()
-        raster_from_center_b = list()
         center_from_raster_b = list()
-        raster_from_world_b = list()
         maps_b = list()
         curr_speed_b = list()
         type_b = list()
@@ -350,17 +340,13 @@ class ContingencyPlanner(Policy):
             curr_pos = agents_hist_pos[:,-1]
             agents_from_center = GeoUtils.transform_matrices(-curr_yaw.flatten(),torch.zeros_like(curr_pos))@GeoUtils.transform_matrices(torch.zeros_like(curr_yaw).flatten(),-curr_pos)
                                  
-            # raster_from_center = centered_raster_from_agent @ agents_from_center
             center_from_raster = center_from_agents @ centered_agent_from_raster
 
-            # raster_from_world = torch.cat((ego_obs["raster_from_world"][i:i+1],agent_obs["raster_from_world"][agent_idx]),0)
 
 
             agent_from_center_b.append(agents_from_center)
             center_from_agent_b.append(center_from_agents)
-            # raster_from_center_b.append(raster_from_center)
             center_from_raster_b.append(center_from_raster)
-            # raster_from_world_b.append(raster_from_world)
 
             maps = torch.cat((ego_obs["image"][i:i+1],agent_obs["image"][agent_idx]),0)
             curr_speed = torch.cat((ego_obs["curr_speed"][i:i+1],agent_obs["curr_speed"][agent_idx]),0)
@@ -391,11 +377,8 @@ class ContingencyPlanner(Policy):
         extent=pad_sequence(extents_b,batch_first=True,padding_value=0),
         raster_from_agent=ego_obs["raster_from_agent"],
         agent_from_raster=centered_agent_from_raster,
-        # raster_from_center=pad_sequence(raster_from_center_b,batch_first=True,padding_value=0),
-        # center_from_raster=pad_sequence(center_from_raster_b,batch_first=True,padding_value=0),
         agents_from_center=pad_sequence(agent_from_center_b,batch_first=True,padding_value=0),
         center_from_agents=pad_sequence(center_from_agent_b,batch_first=True,padding_value=0),
-        # raster_from_world=pad_sequence(raster_from_world_b,batch_first=True,padding_value=0),
         agent_from_world=ego_obs["agent_from_world"],
         world_from_agent=ego_obs["world_from_agent"],
         )
@@ -723,76 +706,6 @@ class ContingencyPlanner(Policy):
         action_info["action_samples"] = {"positions":ego_traj_samples[...,:2],"yaws":ego_traj_samples[...,2:]}
         return action, action_info
 
-
-class ModelPredictiveController(Policy):
-    def __init__(self, device, step_time, predictor, solver="casadi", *args, **kwargs):
-        super().__init__(device, *args, **kwargs)
-        self.device = device
-        self.step_time = step_time
-        self.predictor = predictor
-        self.solver=solver
-
-
-    def eval(self):
-        self.predictor.eval()
-    
-    def get_action(self, obs_dict, **kwargs):
-        bs,horizon = obs_dict["target_positions"].shape[:2]
-
-        agent_preds, _ = self.predictor.get_prediction(
-            obs_dict)
-        agent_preds = TensorUtils.to_numpy(agent_preds.to_dict())
-        obs_np = TensorUtils.to_numpy(obs_dict)
-        plan = list()
-
-        if "coarse_plan" in kwargs:
-            coarse_plan = kwargs["coarse_plan"]
-            
-            ref_positions = TensorUtils.to_numpy(coarse_plan.positions)
-            ref_yaws = TensorUtils.to_numpy(coarse_plan.yaws)
-            mask = np.ones_like(ref_positions[...,0],dtype=bool)
-            ref_vel = dynamics.Unicycle.calculate_vel(ref_positions,ref_yaws,self.step_time,mask)
-            xref = np.concatenate((ref_positions,ref_vel,ref_yaws),-1)
-        else:
-            xref = None
-        x0 = batch_utils().get_current_states(obs_dict,dyn_type=dynamics.Unicycle)
-        x0 = TensorUtils.to_numpy(x0)
-        for i in range(bs):
-            planner = FTOCP(horizon, 1, self.step_time, obs_dict["extent"][i,1].item(), obs_dict["extent"][i,0].item())
-            
-            
-            x0_i = x0_i=x0[i]
-            if xref is not None:
-                xref_i = xref[i]
-                xref_extended = np.concatenate((x0_i[None,:],xref_i))
-                uref_i = dynamics.Unicycle.inverse_dyn(xref_extended[:-1],xref_extended[1:],self.step_time)
-                xref_i = np.clip(xref_i,planner.x_lb,planner.x_ub)
-                uref_i = np.clip(uref_i,planner.u_lb,planner.u_ub)
-                x0_guess = np.concatenate((x0_i[np.newaxis,:],xref_i.repeat(planner.M,axis=0)),0).flatten()
-                u0_guess = uref_i.repeat(planner.M,axis=0).flatten()
-                planner.xGuessTot = np.concatenate((x0_guess,u0_guess,np.zeros(planner.N*planner.M)))
-
-            else:
-                vdes = np.clip(x0_i[2],2.0,25.0)
-                if "ego_lanes" in obs_dict and not (obs_dict["ego_lanes"][i,0]==0).all():
-                    lane = TensorUtils.to_numpy(obs_dict["ego_lanes"][i,0])
-                    lane = np.concatenate([lane[:,:2],np.arctan2(lane[:,3],lane[:,2])[:,np.newaxis]],-1)
-                    xref_i = PlanUtils.obtain_ref(lane, x0_i[0:2], vdes, horizon, self.step_time)
-                else:
-                    s1 = (vdes * np.arange(1, horizon + 1) * self.step_time).reshape(-1,1)
-                    xref_i = np.concatenate((np.cos(x0_i[3])*s1,np.sin(x0_i[3])*s1,np.zeros([s1.shape[0],2])),-1)
-                    xref_i = xref+x0_i[np.newaxis,:]
-
-            agent_idx = np.where(obs_np["all_other_agents_types"][i]>0)[0]
-            ypreds = agent_preds["positions"][i,agent_idx,np.newaxis]
-            agent_extent = np.max(obs_np["all_other_agents_history_extents"][i,agent_idx,:,:2],axis=-2)
-            planner.buildandsolve(x0_i, ypreds, agent_extent, xref_i, np.ones(1))
-            xplan = planner.xSol[1:].reshape((horizon, 4))
-            plan.append(TensorUtils.to_torch(xplan,device=self.device))
-        plan = torch.stack(plan,0)
-        action = Action(positions=plan[...,:2],yaws=plan[...,3:])
-
-        return action, {}
 
 
 class HierSplineSamplingPolicy(Policy):

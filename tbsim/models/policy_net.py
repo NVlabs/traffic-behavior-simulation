@@ -110,27 +110,7 @@ class clique_guided_policy_net(nn.Module):
                 xz = torch.cat((node_history_encoded[nt][-1],batch_z[nt]),dim=-1)
             
             if self.algo_config['use_lane_dec'] and self.map_encoding and nt in self.map_enc_dim:
-                # guide_RNN_hidden = self.guide_hidden_net[nt](torch.unsqueeze(xz,0))
-                # des_traj[nt] = list()
-                # for t in range(ft):
 
-                #     if t==0:
-                #         wp = torch.zeros([xz.shape[0],3]).to(self.device)
-                #     elif t==1:
-                        
-                #         psi = torch.atan2(des_traj[nt][0][:,1],des_traj[nt][0][:,0]).reshape(-1,1)
-                #         wp = torch.cat((des_traj[nt][0],psi),dim=-1)
-                #     else:
-                #         psi = torch.atan2(des_traj[nt][t-1][:,1]-des_traj[nt][t-2][:,1],des_traj[nt][t-1][:,0]-des_traj[nt][t-2][:,0]).reshape(-1,1)
-                #         wp = torch.cat((des_traj[nt][t-1],psi),dim=-1)
-                #     delta_y,delta_psi,ref_pt = batch_proj(wp,batch_lane_st[nt][...,[0,1,3]].permute(1,0,2))
-                #     if delta_y.isnan().any() or delta_psi.isnan().any() or ref_pt.isnan().any():
-                #         pdb.set_trace()
-                #     ref_psi = ref_pt[...,2:3]
-                #     RNN_input = torch.unsqueeze(torch.cat((xz,delta_y,torch.cos(ref_psi),torch.sin(ref_psi)),dim=-1),dim=0)
-                #     RNN_out,guide_RNN_hidden = self.guide_RNN[nt](RNN_input,guide_RNN_hidden)
-                #     des_traj[nt].append((self.RNN_proj_net[nt](RNN_out[0])))
-                
                 # des_traj[nt] = torch.stack(des_traj[nt],dim=0)
                 xz = torch.unsqueeze(xz,0)
                 xz_seq = torch.cat((xz.repeat(ft,1,1),batch_lane_st[nt][...,[0,1,3]]),dim=-1)
@@ -188,14 +168,9 @@ class clique_guided_policy_net(nn.Module):
             ## pass through pre-encoding network
                 if batch_edge[edge_type].shape[0]>0:
                     batch_edge_enc[t] = torch.cat((batch_edge_enc[t],self.edge_encoding_net[edge_type](batch_edge[edge_type][:,0:dim1],batch_edge[edge_type][:,dim1:dim1+dim2],edge_node_size1,edge_node_size2)),dim=0)
-                    if batch_edge_enc[t].isnan().any():
-                        import pdb
-                        pdb.set_trace()
             ## put encoded vectors into observation matrices of each node
             for nt in self.node_types:
                 if node_obs_idx[nt].shape[0]>0:
-                    # if (node_obs_idx[nt]==0).all():
-                    #     pdb.set_trace()
                     try:
                         batch_obs[nt] = batch_edge_enc[t][node_obs_idx[nt]]
                     except:
@@ -216,12 +191,7 @@ class clique_guided_policy_net(nn.Module):
                     tracking_error += torch.linalg.norm(rel_state[...,0:2])/rel_state.shape[0]
 
                     batch_obs_enc,_ = self.obs_att[nt](batch_obs[nt],rel_state)
-                    if batch_obs_enc.isnan().any():
-                        pdb.set_trace()
                     obs_lstm_out,(obs_lstm_h[nt],obs_lstm_c[nt]) = self.obs_lstm[nt](torch.unsqueeze(batch_obs_enc,dim=0),(obs_lstm_h[nt],obs_lstm_c[nt]))
-                    
-                    if obs_lstm_out.isnan().any():
-                        pdb.set_trace()
                     batch_input_pred[nt][t] = self.action_net[nt](torch.cat((rel_state,next_wp,batch_node_size[nt],torch.squeeze(obs_lstm_out,dim=0),batch_z[nt]),dim=-1))
 
                     if not robot_traj is None:
@@ -235,9 +205,6 @@ class clique_guided_policy_net(nn.Module):
                     else:
                         batch_state_pred[nt][t] = self.dyn_net[nt](batch_state_pred[nt][t-1],batch_input_pred[nt][t],self.dt)
                         batch_state_pred_st[nt][t] = self.dyn_net[nt](batch_state_pred_st[nt][t-1],batch_input_pred[nt][t],self.dt)
-
-                    if batch_state_pred[nt][t].isnan().any() or batch_state_pred_st[nt][t].isnan().any():
-                        pdb.set_trace()
 
                     if not robot_traj is None:
                         for idx,(traj,traj_st) in robot_traj[nt].items():
@@ -369,42 +336,6 @@ class guided_policy_net(nn.Module):
 
         
         xz = torch.cat((node_history_encoded[:,:,-1:].repeat_interleave(numMode,-2),encoded_map.unsqueeze(-2).repeat_interleave(numMode,-2),z_node_onehot),dim=-1)
-        
-        # if self.algo_config['use_lane_dec'] and self.map_encoding and nt in self.map_enc_dim:
-        #     # guide_RNN_hidden = self.guide_hidden_net[nt](torch.unsqueeze(xz,0))
-        #     # des_traj[nt] = list()
-        #     # for t in range(ft):
-
-        #     #     if t==0:
-        #     #         wp = torch.zeros([xz.shape[0],3]).to(self.device)
-        #     #     elif t==1:
-                    
-        #     #         psi = torch.atan2(des_traj[nt][0][:,1],des_traj[nt][0][:,0]).reshape(-1,1)
-        #     #         wp = torch.cat((des_traj[nt][0],psi),dim=-1)
-        #     #     else:
-        #     #         psi = torch.atan2(des_traj[nt][t-1][:,1]-des_traj[nt][t-2][:,1],des_traj[nt][t-1][:,0]-des_traj[nt][t-2][:,0]).reshape(-1,1)
-        #     #         wp = torch.cat((des_traj[nt][t-1],psi),dim=-1)
-        #     #     delta_y,delta_psi,ref_pt = batch_proj(wp,batch_lane_st[nt][...,[0,1,3]].permute(1,0,2))
-        #     #     if delta_y.isnan().any() or delta_psi.isnan().any() or ref_pt.isnan().any():
-        #     #         pdb.set_trace()
-        #     #     ref_psi = ref_pt[...,2:3]
-        #     #     RNN_input = torch.unsqueeze(torch.cat((xz,delta_y,torch.cos(ref_psi),torch.sin(ref_psi)),dim=-1),dim=0)
-        #     #     RNN_out,guide_RNN_hidden = self.guide_RNN[nt](RNN_input,guide_RNN_hidden)
-        #     #     des_traj[nt].append((self.RNN_proj_net[nt](RNN_out[0])))
-            
-        #     # des_traj[nt] = torch.stack(des_traj[nt],dim=0)
-        #     xz = torch.unsqueeze(xz,0)
-        #     xz_seq = torch.cat((xz.repeat_interleave(Tf,0),lane_st[...,[0,1,3]]),dim=-1)
-        #     guide_RNN_hidden = self.guide_hidden_net[nt](xz)
-        #     RNN_out,_ = self.guide_RNN[nt](xz_seq,guide_RNN_hidden)
-        #     des_traj[nt] = self.RNN_proj_net[nt](RNN_out)
-
-        # else:
-        #     xz = torch.unsqueeze(xz,0)
-        #     xz_seq = xz.repeat(ft,1,1)
-        #     guide_RNN_hidden = self.guide_hidden_net[nt](xz)
-        #     RNN_out,_ = self.guide_RNN[nt](xz_seq,guide_RNN_hidden)
-        #     des_traj[nt] = self.RNN_proj_net[nt](RNN_out)
 
         xz = torch.unsqueeze(xz,0)
         xz_seq = xz.repeat_interleave(Tf,0)
@@ -415,29 +346,12 @@ class guided_policy_net(nn.Module):
             des_traj.append(self.RNN_proj_net[nt](RNN_out).reshape(Tf,bs,Na,-1,2)*(node_types==nt.value)[None,:,:,None,None])
         des_traj = sum(des_traj)
 
-        
-        # node_obs_idx = {nt:torch.zeros([len(node_index[nt]),self.max_Nnode-1],dtype=torch.long) for nt in self.node_types}
-        # offset = 1
-        # edge_idx_offset = dict()
 
-        # for et in self.edge_types:
-        #     edge_idx_offset[et] = offset
-        #     offset+= len(edge_index[et])
-        # for et in self.edge_types:
-        #     nt = et[0]
-        #     for idx, (node_idx,nb_idx) in edge_to_node_index[et].items():
-        #         node_obs_idx[nt][node_idx,nb_idx] = idx + edge_idx_offset[et]
 
         edge_enc = [None]*Tf
         if cond is not None:
             cond_state,cond_state_local = cond
         for t in range(Tf):
-            # if t==0:
-            #     batch_edge = torch.cat((state_history[...,-1,:].unsqueeze(2).repeat_interleave(Na,2),\
-            #                                         state_history[...,-1,:].unsqueeze(1).repeat_interleave(Na,1)),dim=-1) 
-            # else:
-            #     batch_edge = torch.cat((state_pred[t-1].unsqueeze(2).repeat_interleave(Na,2),\
-            #                                         state_pred[t-1].unsqueeze(1).repeat_interleave(Na,1)),dim=1)
             ## put states into raw obs tensor
             edge_enc[t] = list()
             self_mask = ~torch.eye(Na,dtype=torch.bool).unsqueeze(0).to(device)

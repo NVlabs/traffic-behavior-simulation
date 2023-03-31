@@ -78,60 +78,6 @@ class CNNROIMapEncoder(nn.Module):
         return out
 
 
-# def bilinear_interpolate(img, x, y, floattype=torch.float):
-#     """Return bilinear interpolation of 4 nearest pts w.r.t to x,y from img
-#     Args:
-#         img (torch.Tensor): Tensor of size cxwxh. Usually one channel of feature layer
-#         x (torch.Tensor): Float dtype, x axis location for sampling
-#         y (torch.Tensor): Float dtype, y axis location for sampling
-#     batched version
-
-#     Returns:
-#         torch.Tensor: interpolated value
-#     """
-#     bs = img.size(0)
-#     x0 = torch.floor(x).type(torch.cuda.LongTensor)
-#     x1 = x0 + 1
-
-#     y0 = torch.floor(y).type(torch.cuda.LongTensor)
-#     y1 = y0 + 1
-
-#     x0 = torch.clamp(x0, 0, img.shape[-2] - 1)
-#     x1 = torch.clamp(x1, 0, img.shape[-2] - 1)
-#     y0 = torch.clamp(y0, 0, img.shape[-1] - 1)
-#     y1 = torch.clamp(y1, 0, img.shape[-1] - 1)
-
-#     Ia = [None] * bs
-#     Ib = [None] * bs
-#     Ic = [None] * bs
-#     Id = [None] * bs
-#     for i in range(bs):
-#         Ia[i] = img[i, ..., y0[i], x0[i]]
-#         Ib[i] = img[i, ..., y1[i], x0[i]]
-#         Ic[i] = img[i, ..., y0[i], x1[i]]
-#         Id[i] = img[i, ..., y1[i], x1[i]]
-
-#     Ia = torch.stack(Ia, dim=0)
-#     Ib = torch.stack(Ib, dim=0)
-#     Ic = torch.stack(Ic, dim=0)
-#     Id = torch.stack(Id, dim=0)
-
-#     step = (x1.type(floattype) - x0.type(floattype)) * (
-#         y1.type(floattype) - y0.type(floattype)
-#     )
-#     step = torch.clamp(step, 1e-3, 2)
-#     norm_const = 1 / step
-
-#     wa = (x1.type(floattype) - x) * (y1.type(floattype) - y) * norm_const
-#     wb = (x1.type(floattype) - x) * (y - y0.type(floattype)) * norm_const
-#     wc = (x - x0.type(floattype)) * (y1.type(floattype) - y) * norm_const
-#     wd = (x - x0.type(floattype)) * (y - y0.type(floattype)) * norm_const
-#     return (
-#         Ia * wa.unsqueeze(1)
-#         + Ib * wb.unsqueeze(1)
-#         + Ic * wc.unsqueeze(1)
-#         + Id * wd.unsqueeze(1)
-#     )
 def bilinear_interpolate(img, x, y, floattype=torch.float, flip_y=False):
     """Return bilinear interpolation of 4 nearest pts w.r.t to x,y from img
     Args:

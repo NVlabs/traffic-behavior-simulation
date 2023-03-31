@@ -1019,8 +1019,6 @@ class FutureDecoder(nn.Module):
             # TODO: (Xinshuo) z is combined twice here, redundancy
             out_in_z = torch.cat(in_arr, dim=-1)                # N x BS x feat
             updated_dec_in_z_list.append(out_in_z)
-            # import pdb
-            # pdb.set_trace()
             curr_dec_list = orig_dec_in_z_list[0:1]+updated_dec_in_z_list+orig_dec_in_z_list[F_tmp+1:]
             dec_in_z = torch.cat(curr_dec_list,0)
             # dec_in_z[F_tmp*agent_num:(1+F_tmp)*agent_num] = out_in_z
@@ -1173,10 +1171,6 @@ class FutureDecoder(nn.Module):
 
             # use latent code z from the prior for inference
             elif mode == "infer":
-                # dist =  data["p_z_dist_infer"] if "p_z_dist_infer" in data else data["q_z_dist_infer"]
-                # z = dist.sample()  # NBS x 32
-                # import pdb
-                # pdb.set_trace()
 
                 dist = data["q_z_dist"] if data["q_z_dist"] is not None else data["p_z_dist"]
                 if self.z_type=="gaussian":
@@ -1218,17 +1212,7 @@ class FutureDecoder(nn.Module):
                 need_weights=need_weights,
                 cond_idx=cond_idx
             )
-            # self.decode_traj_ar_orig(
-            #     data,
-            #     mode,
-            #     context,
-            #     pre_motion,
-            #     pre_vel,
-            #     pre_motion_scene_norm,
-            #     z,
-            #     sample_num,
-            #     need_weights=need_weights,
-            # )
+
         else:
             self.decode_traj_batch(
                 data,
@@ -1788,31 +1772,14 @@ class AgentFormer(nn.Module):
         else:
             EC_coll_loss = torch.tensor(0.0).to(device)
         
-        # compute collision loss
-        
-        # pred_edges = batch_utils().generate_edges(
-        #     pred_batch["agent_avail"].repeat_interleave(numMode*Ne,0),
-        #     extent.repeat_interleave(Ne*numMode,0),
-        #     traj_pred_tiled2[...,:2],
-        #     traj_pred_tiled2[...,2:]
-        # )
-        
-        # coll_loss = collision_loss(pred_edges=pred_edges)
-        # if not isinstance(coll_loss,torch.Tensor):
-        #     coll_loss = torch.tensor(coll_loss).to(device)
+
         
         losses = OrderedDict(
             prediction_loss=pred_loss,
             kl_loss = kl_loss,
-            # collision_loss=coll_loss,
             EC_collision_loss = EC_coll_loss,
             diversity_loss = -div_score,
-            # deviation_loss = dev_loss,
         )
-
-        # if self.algo_config.input_weight_scaling is not None and "controls" in pred_batch:
-        #     input_weight_scaling = torch.tensor(self.algo_config.input_weight_scaling).to(pred_batch["controls"].device)
-        #     losses["input_loss"] = torch.mean(pred_batch["controls"] ** 2 *pred_batch["mask"][...,None]*input_weight_scaling)
 
 
         return losses

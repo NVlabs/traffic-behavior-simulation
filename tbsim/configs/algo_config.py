@@ -535,7 +535,6 @@ class TransformerPredConfig(AlgoConfig):
         self.disable_map = False
         self.goal_conditioned = True
 
-        # self.disable_lane_boundaries = True
         self.global_head_dropout = 0.0
         self.training_num_N = 10000
         self.N_layer_enc = 2
@@ -580,12 +579,9 @@ class TransformerPredConfig(AlgoConfig):
 
         self.try_to_use_cuda = True
 
-        # self.model_params.future_num_frames = 0
-        # self.model_params.step_time = 0.2
+
         self.render_ego_history = False
-        # self.model_params.history_num_frames_ego = 0
-        # self.model_params.history_num_frames = 0
-        # self.model_params.history_num_frames_agents = 0
+
 
         self.optim_params.policy.learning_rate.initial = 3e-4  # policy learning rate
         self.optim_params.policy.learning_rate.decay_factor = (

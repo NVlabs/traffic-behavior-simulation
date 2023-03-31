@@ -18,9 +18,7 @@ from tbsim.utils.config_utils import get_experiment_config_from_file
 from tbsim.policies.hardcoded import (
     ReplayPolicy, 
     GTPolicy, 
-    EC_sampling_controller, 
     ContingencyPlanner,
-    ModelPredictiveController,
     HierSplineSamplingPolicy,
     )
 from tbsim.configs.base import ExperimentConfig
@@ -30,7 +28,6 @@ from tbsim.policies.wrappers import (
     HierarchicalWrapper,
     HierarchicalSamplerWrapper,
     SamplingPolicyWrapper,
-    RefineWrapper,
 )
 from tbsim.configs.config import Dict
 from tbsim.utils.experiment_utils import get_checkpoint
@@ -278,10 +275,7 @@ class Hierarchical(PolicyComposer):
             algo_config=planner_cfg.algo,
             modality_shapes=self.get_modality_shapes(planner_cfg),
         ).to(self.device).eval()
-        # planner_cfg = get_experiment_config_from_file("/home/yuxiaoc/repos/behavior-generation/experiments/templates/l5_spatial_planner.json")
-        # planner = SpatialPlanner(algo_config=planner_cfg.algo,
-        #     modality_shapes=self.get_modality_shapes(planner_cfg),
-        # ).to(self.device).eval()
+
         return planner, planner_cfg.clone()
 
     def _get_gt_planner(self):
@@ -490,28 +484,6 @@ class HierAgentAwareMPC(Hierarchical):
         policy = ModelPredictiveController(self.device, exp_cfg.algo.step_time, predictor)
         return policy, exp_cfg
 
-class GuidedHAAMPC(HierAgentAwareMPC):
-    def _get_initial_planner(self):
-        composer = HierAgentAware(self.eval_config, self.device, self.ckpt_root_dir)
-        return composer.get_policy()
-    def get_policy(self, planner=None, predictor=None, initial_planner=None):
-        if planner is not None:
-            assert isinstance(planner, SpatialPlanner)
-        else:
-            planner, _ = self._get_planner()
-
-        if predictor is not None:
-            assert isinstance(predictor, MATrafficModel)
-            exp_cfg = None
-        else:
-            predictor, exp_cfg = self._get_predictor()
-            exp_cfg = exp_cfg.clone()
-        if initial_planner is None:
-            initial_planner, _ = self._get_initial_planner()
-        exp_cfg.env.data_generation_params.vectorize_lane = True
-        policy = ModelPredictiveController(self.device, exp_cfg.algo.step_time, predictor)
-        policy = RefineWrapper(initial_planner=initial_planner,refiner=policy,device=self.device)
-        return policy, exp_cfg
     
 
 
@@ -546,47 +518,6 @@ class HAASplineSampling(Hierarchical):
             exp_cfg = exp_cfg.clone()
         exp_cfg.env.data_generation_params.vectorize_lane = True
         policy = HierSplineSamplingPolicy(self.device, exp_cfg.algo.step_time, predictor)
-        return policy, exp_cfg
-
-
-class AgentAwareEC(Hierarchical):
-    def _get_EC_predictor(self):
-        EC_ckpt_path, EC_config_path = get_checkpoint(
-            ckpt_key=self.eval_config.ckpt.policy.ckpt_key,
-            ckpt_dir=self.eval_config.ckpt.policy.ckpt_dir,
-            ckpt_root_dir=self.ckpt_root_dir
-        )
-        EC_cfg = get_experiment_config_from_file(EC_config_path)
-
-        EC_model = BehaviorCloningEC.load_from_checkpoint(
-            EC_ckpt_path,
-            algo_config=EC_cfg.algo,
-            modality_shapes=self.get_modality_shapes(EC_cfg),
-        ).to(self.device).eval()
-        return EC_model, EC_cfg.clone()
-
-    def get_policy(self, planner=None, predictor=None, controller=None):
-        if planner is not None:
-            assert isinstance(planner, SpatialPlanner)
-            assert isinstance(predictor, BehaviorCloningEC)
-            exp_cfg = None
-        else:
-            planner, _ = self._get_planner()
-            predictor, exp_cfg = self._get_EC_predictor()
-
-        ego_sampler = SplinePlanner(self.device, N_seg=planner.algo_config.future_num_frames+1,acce_grid=[-5,-2.5,0,2])
-        agent_planner = PolicyWrapper.wrap_planner(
-            planner,
-            mask_drivable=self.eval_config.policy.mask_drivable,
-            sample=False
-        )
-
-        policy = EC_sampling_controller(
-            ego_sampler=ego_sampler,
-            EC_model=predictor,
-            agent_planner=agent_planner,
-            device=self.device
-        )
         return policy, exp_cfg
 
 
@@ -653,11 +584,7 @@ class TreeContingency(Hierarchical):
         elif model_choice=="kinematic":
             predictor_cfg = get_experiment_config_from_file("experiments/templates/nusc_tree.json")
             predictor = SimpleTreeModel(predictor_cfg.algo)
-        # predictor_cfg = get_experiment_config_from_file("experiments/templates/l5_mixed_tree_vae_plan.json")
-        # predictor = SceneTreeTrafficModel(
-        #     algo_config=predictor_cfg.algo,
-        #     modality_shapes=self.get_modality_shapes(predictor_cfg),
-        # ).to(self.device).eval()
+
         return predictor, predictor_cfg.clone()
 
     def get_policy(self, planner=None, predictor=None, controller=None,mode="contingency"):

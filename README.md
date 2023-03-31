@@ -9,7 +9,7 @@ Install `tbsim`
 ```angular2html
 conda create -n tbsim python=3.8
 conda activate tbsim
-git clone ssh://git@github.com:NVlabs/traffic-sim.git tbsim
+git clone git@github.com:NVlabs/traffic-behavior-simulation.git tbsim
 cd tbsim
 pip install -e .
 ```
@@ -120,7 +120,7 @@ python scripts/evaluate.py \
   --eval_class HierAgentAware \
   --render
 ```
-The ckpt_yaml file specifies the checkpoints for the spatial planner and predictor, an example can be found at evaluation/BITS.yaml
+The ckpt_yaml file specifies the checkpoints for the spatial planner and predictor, an example can be found at `evaluation/BITS.yaml`.
 
 ### 6. Closed-loop evaluation of policy with BITS
 
@@ -137,4 +137,4 @@ python scripts/evaluate.py \
   --render
 ```
 
-Here your policy should be declared in tbsim/evaluation/policy_composer.py.
+Here your policy should be declared in `tbsim/evaluation/policy_composer.py`.

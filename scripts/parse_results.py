@@ -30,19 +30,6 @@ def parse(args):
     if not os.path.exists(hist_stats_fn):
         compute_and_save_stats(os.path.join(args.results_dir, "data.hdf5"))
 
-    # hjson = json.load(open(hist_stats_fn, "r"))
-    # if cfg["env"] == "l5kit":
-    #     gt_hjson = json.load(open("/home/danfeix/workspace/tbsim/results/l5kit/GroundTruth/hist_stats.json", "r"))
-    # elif cfg["env"] == "nusc":
-    #     gt_hjson = json.load(open("/home/danfeix/workspace/tbsim/results/nusc/GroundTruth/hist_stats.json", "r"))
-    #
-    # for k in gt_hjson["stats"]:
-    #     results["{}_dist".format(k)] = calc_hist_distance(
-    #         hist1=np.array(gt_hjson["stats"][k]),
-    #         hist2=np.array(hjson["stats"][k]),
-    #         bin_edges=np.array(gt_hjson["ticks"][k][1:])
-    #     )
-
     print("num_scenes: {}".format(len(rjson["scene_index"])))
     ade = results["ade"] if "ade" in results else results["ADE"]
     fde = results["fde"] if "fde" in results else results["FDE"]

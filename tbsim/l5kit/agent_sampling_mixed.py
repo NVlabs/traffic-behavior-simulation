@@ -339,12 +339,6 @@ def get_lane_info(
     STEP_INTERPOLATION = MAX_POINTS_LANES  # number of points along lane
     MAX_CROSSWALKS = vectorizer.lane_cfg_params["max_num_crosswalks"]
 
-    # lanes_points = np.zeros((MAX_LANES * 2, MAX_POINTS_LANES, 2), dtype=np.float32)
-    # lanes_availabilities = np.zeros((MAX_LANES * 2, MAX_POINTS_LANES), dtype=np.float32)
-
-    # lanes_mid_points = np.zeros((MAX_LANES, MAX_POINTS_LANES, 2), dtype=np.float32)
-    # lanes_mid_availabilities = np.zeros((MAX_LANES, MAX_POINTS_LANES), dtype=np.float32)
-    # lanes_tl_feature = np.zeros((MAX_LANES, MAX_POINTS_LANES, 1), dtype=np.float32)
 
     # 8505 x 2 x 2
     lanes_bounds = vectorizer.mapAPI.bounds_info["lanes"]["bounds"]
