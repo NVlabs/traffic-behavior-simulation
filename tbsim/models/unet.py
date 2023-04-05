@@ -261,8 +261,6 @@ class UNet(nn.Module):
         e_in = self._e0(x)
         # Run all encoder blocks
         skip_out_dict = {}
-        # import pdb
-        # pdb.set_trace()
         for i in range(self._num_resnet_blocks):
             block = getattr(self, '_e{}'.format(i + 1))
             e_out = block(e_in)
@@ -501,8 +499,6 @@ def main():
                                                     )
     pred_logits, pred_traj = out
     traj = postprocessor(pred_traj,query_pts,curr_state)
-    import pdb
-    pdb.set_trace()
     
 
 

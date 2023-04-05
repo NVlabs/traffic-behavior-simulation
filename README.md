@@ -26,7 +26,7 @@ pip install -e .
 Install `Pplan`
 ```
 cd ..
-git clone ssh://git@github.com:NVlabs/policy-planner.git Pplan
+git clone ssh://git@github.com:NVlabs/spline-planner.git Pplan
 cd Pplan
 pip install -e .
 ```

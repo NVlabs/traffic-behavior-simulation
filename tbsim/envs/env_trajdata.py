@@ -743,7 +743,6 @@ class EnvSplitUnifiedSimulation(EnvUnifiedSimulation):
         # obs = {k:v for k,v in obs.items() if not isinstance(v,list)}
 
         # record metrics
-        #TODO: fix the bugs in metrics when using diffstack
         self._add_per_step_metrics(obs)
         if step_actions.has_ego:
             combined_step_actions = self.combine_action(step_actions)

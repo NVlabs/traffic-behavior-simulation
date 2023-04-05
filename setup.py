@@ -26,7 +26,6 @@ setup(
         "imageio-ffmpeg",
         "python-louvain",
         "networkx",
-        "casadi",
         "torchtext",  # weird pytorch-lightning dependency bug
         "pytorch-lightning",
         "nuscenes-devkit",

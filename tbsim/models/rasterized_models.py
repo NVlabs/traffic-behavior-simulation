@@ -1,4 +1,3 @@
-import pdb
 from turtle import forward
 from typing import Dict, List
 from collections import OrderedDict
@@ -1854,22 +1853,6 @@ class UnetPredModel(nn.Module):
         
         prob = prob.nan_to_num(nan=0.0, posinf=1.0, neginf=0.0)
         prob = prob/prob.sum(-1,keepdim=True)
-
-        # import matplotlib.pyplot as plt
-        # img1 = static_img[:,:3].cpu().numpy()
-        # img2 = seq_img.abs().max(1,keepdim=True)[0].cpu().numpy()
-        # img3 = torch.cat((static_img[:,:2],seq_img.abs().max(1,keepdim=True)[0]),1).cpu().numpy()
-        
-        # for i in range(seq_img.shape[1]):
-        #     img = torch.cat((static_img[:,:2],seq_img[:,i:i+1]),1).cpu().numpy()
-        #     fig,axes = plt.subplots(1,2)
-        #     axes[0].imshow(img[0].transpose(1,2,0))
-        #     axes[1].imshow(img[1].transpose(1,2,0))
-        #     plt.show()
-        # import pdb
-        # pdb.set_trace()
-        # pos_xy_rel = raster_pos.unsqueeze(1)/(seq_img.shape[-1]-1)*2-1
-        # xx = torch.nn.functional.grid_sample(seq_img,pos_xy_rel,align_corners=True,)
         
         res = self.postprocessor(pred_traj,raster_pos,curr_state)
 
@@ -2176,10 +2159,7 @@ class UnetSceneTreeModel(nn.Module):
         batched_pred["target_trajectory"] = scene_fut_traj[...,:self.stage*self.num_frames_per_stage,:]
 
         batched_pred["agent_avail"] = agent_avail.any(-1)
-        
-        # import pdb
-        # pdb.set_trace()
-        # print(torch.cuda.memory_allocated()/1024/1024/1024) 
+
         return batched_pred
 
     def _batching_from_stages(self,preds):
