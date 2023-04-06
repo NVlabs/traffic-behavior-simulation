@@ -148,7 +148,6 @@ plot_snapshot.ipynb
 tree_trained_models/
 tree_vae_trained_models/
 checkpoints/
-assets/
 experiments/
 figures/
 

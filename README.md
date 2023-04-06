@@ -1,5 +1,9 @@
 # Traffic Behavior Simulation (tbsim)
-Software infrastructure for learning-based traffic simulation.
+TBSIM is a simulation environment designed for data-driven closed-loop simulation of autonomous vehicles. It supports training and evaluation of popular traffic models such as behavior cloning, CVAE, and our new [BITS](https://arxiv.org/abs/2208.12403) model specifically designed for AV simulation. The users can flexibly specify the simulation environment and plug in their own model (learned or analytic) for evaluation.
+
+Thanks to [trajdata](https://github.com/NVlabs/trajdata), TBSIM can access data and scenarios from a wide range of public datasets, including Lyft Level 5 [dataset](https://level-5.global/data/), nuScenes [dataset](https://www.nuscenes.org/nuscenes), and nuPlan [dataset](https://nuplan.org/).
+
+TBSIM is well equiped with abundant util functions, and supports batched simulation in parallel, logging, and replay. We also provide a suite of simulation metrics that measures the safety, liveness, and diversity of the simulation.
 
 <img src="assets/sample_rollout.gif" width="750" height="250"/>
 
