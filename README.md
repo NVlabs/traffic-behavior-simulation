@@ -1,7 +1,7 @@
 # Traffic Behavior Simulation (tbsim)
 TBSIM is a simulation environment designed for data-driven closed-loop simulation of autonomous vehicles. It supports training and evaluation of popular traffic models such as behavior cloning, CVAE, and our new [BITS](https://arxiv.org/abs/2208.12403) model specifically designed for AV simulation. The users can flexibly specify the simulation environment and plug in their own model (learned or analytic) for evaluation.
 
-Thanks to [trajdata](https://github.com/NVlabs/trajdata), TBSIM can access data and scenarios from a wide range of public datasets, including [Lyft Level 5 ](https://level-5.global/data/), [nuScenes](https://www.nuscenes.org/nuscenes), and [nuPlan](https://nuplan.org/).
+Thanks to [trajdata](https://github.com/NVlabs/trajdata), TBSIM can access data and scenarios from a wide range of public datasets, including [Lyft Level 5](https://woven.toyota/en/prediction-dataset), [nuScenes](https://www.nuscenes.org/nuscenes), and [nuPlan](https://nuplan.org/).
 
 TBSIM is well equiped with abundant util functions, and supports batched simulation in parallel, logging, and replay. We also provide a suite of simulation metrics that measures the safety, liveness, and diversity of the simulation.
 
@@ -38,7 +38,7 @@ pip install -e .
 Usually the user needs to install torch separately that fits the hardware setup (OS, GPU, CUDA version, etc., check https://pytorch.org/get-started/locally/ for instructions)
 ## Quick start
 ### 1. Obtain dataset(s)
-We currently support the Lyft Level 5 [dataset](https://level-5.global/data/) and the nuScenes [dataset](https://www.nuscenes.org/nuscenes).
+We currently support the Lyft Level 5 [dataset](https://woven.toyota/en/prediction-dataset) and the nuScenes [dataset](https://www.nuscenes.org/nuscenes).
 
 #### Lyft Level 5:
 * Download the Lyft Prediction dataset (only the metadata and the map) and organize the dataset directory as follows:
