@@ -1,0 +1,6 @@
+planner:
+  ckpt_dir: checkpoints/nusc_archresnet50_bs50_4130359/run0
+  ckpt_key: iter41000
+predictor:
+  ckpt_dir: checkpoints/nusc_dynUnicycle_gl0_yrl0_tfTrue_4130553
+  ckpt_key: 94000

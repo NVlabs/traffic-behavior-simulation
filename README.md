@@ -124,7 +124,11 @@ python scripts/evaluate.py \
   --eval_class HierAgentAware \
   --render
 ```
-The ckpt_yaml file specifies the checkpoints for the spatial planner and predictor, an example can be found at `evaluation/BITS.yaml`.
+The ckpt_yaml file specifies the checkpoints for the spatial planner and predictor, an example can be found at `evaluation/BITS_example.yaml` with pretrained checkpoints.
+
+Pretrained checkpoints can be downloaded at https://www.dropbox.com/sh/vdmy9eq9nlvx0nf/AADpCpvCF2ypLIuvVe1Cizd0a?dl=0.
+
+You can check the launch.json file if using VS code.
 
 ### 6. Closed-loop evaluation of policy with BITS
 

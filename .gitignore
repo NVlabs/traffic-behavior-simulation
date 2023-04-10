@@ -1,12 +1,10 @@
 wandb/
 videos/
 figures/
-checkpoints
 experiments/
+checkpoints
 visualizations/
 results/
-scripts/create_experiment_yuxiao.py
-scripts/launch_experiments.py
 ## config files
 #*.yaml
 # Byte-compiled / optimized / DLL files
@@ -87,9 +85,7 @@ instance/
 
 # Sphinx documentation
 docs/_build/
-scripts/create_evaluation.py
-scripts/evaluate.py
-tbsim/configs/eval_configs.py
+
 
 # PyBuilder
 target/
@@ -137,48 +133,15 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-results/
-Icra_result/
+
 agentformer_trained_models/
 bc_trained_models/
-icra_result.ipynb
-init_test.ipynb
-notebooks/
-plot_snapshot.ipynb
 tree_trained_models/
 tree_vae_trained_models/
-checkpoints/
-experiments/
-figures/
-
-l5_rasterized_tree_vae_trained_models/test/run0/logs/log.txt
-scripts/create_evaluation.py
-scripts/create_evaluation.py
-tbsim/configs/eval_configs.py
-generate_all_evaluations.sh
-generate_all_evaluations_l5kit.sh
-generate_all_evaluations_nusc.sh
-plot_result_l5kit.ipynb
-plot_result_nusc.ipynb
-plot_result.ipynb
-test.py
-
-obs.pkl
-problem.pkl
-scept_trained_models/test/run0/config.json
-scripts/create_experiment_yuxiao.py
-tbsim/policies/MPC/qp_solver/problem.pickle
-FPMPC/
-myMPC_FORCESPRO/
-tbsim/adversarial_sim.py
-FPMPC_T10_D0_S10_M1/
-FPMPC_T10_D4_S6_M1/
-
-*.forces
-*.ipynb
-FPMPC_T10_D4_S5_M1/
-FPMPC_T16_D4_S6_M1/
-tbsim/envs/test
 ma_rasterized_trained_models
 scept_trained_models
 spatial_planner_trained_models
+
+
+
+

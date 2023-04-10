@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "BITS sim",
+            "name": "BITS sim nuScenes",
             "type": "python",
             "request": "launch",
             "python": "/home/yuxiaoc/.conda/envs/pub_tbsim/bin/python3",
@@ -15,9 +15,9 @@
             "args":[
                 "--results_root_dir=results/",
                 "--num_scenes_per_batch=2", 
-                "--dataset_path=/home/yuxiaoc/repos/Trajectron-plus-plus/experiments/nuScenes/v1.0-trainval_meta/",
+                "--dataset_path=<nuscenes-dataset-path>",
                 "--env=nusc", 
-                "--ckpt_yaml=evaluation/BITS.yaml",
+                "--ckpt_yaml=evaluation/BITS_example.yaml",
                 "--eval_class=HierAgentAware",
                 // "--ckpt_root_dir=/home/yuxiaoc/repos/behavior-generation/checkpoints/"
             ]
