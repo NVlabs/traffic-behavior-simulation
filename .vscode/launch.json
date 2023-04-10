@@ -1,7 +1,4 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
@@ -19,7 +16,6 @@
                 "--env=nusc", 
                 "--ckpt_yaml=evaluation/BITS_example.yaml",
                 "--eval_class=HierAgentAware",
-                // "--ckpt_root_dir=/home/yuxiaoc/repos/behavior-generation/checkpoints/"
             ]
         }
     ]
