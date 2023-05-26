@@ -217,11 +217,12 @@ def run_evaluation(eval_cfg, save_cfg, data_to_disk, render_to_video):
                     total_info[k].extend(v)
                 elif isinstance(v,dict):
                     total_info[k].update(v)
-
-        with open(os.path.join(eval_cfg.results_dir, "sim_info.json"),"w+") as fp:
-            json.dump(total_info,fp)
-            print("sim info saved to {}".format(os.path.join(eval_cfg.results_dir, "sim_info.json")))
-
+        try:
+            with open(os.path.join(eval_cfg.results_dir, "sim_info.json"),"w+") as fp:
+                json.dump(total_info,fp)
+                print("sim info saved to {}".format(os.path.join(eval_cfg.results_dir, "sim_info.json")))
+        except:
+            print("fail to save sim info")
         if len(total_trace)>0:
             with open(os.path.join(eval_cfg.results_dir, "trace.pkl"),"wb") as fp:
                 pickle.dump(total_trace,fp)

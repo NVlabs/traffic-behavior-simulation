@@ -59,6 +59,7 @@ We currently support the Lyft Level 5 [dataset](https://woven.toyota/en/predicti
     ```
     nuscenes/
     │   maps/
+    │   └── expansion/
     │   v1.0-mini/
     │   v1.0-trainval/
     ```

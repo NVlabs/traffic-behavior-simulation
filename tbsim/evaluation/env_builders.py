@@ -32,7 +32,7 @@ class EnvironmentBuilder(object):
 
     def _get_analytical_metrics(self):
         metrics = dict(
-            ego_off_road_rate=EnvMetrics.OffRoadRateVec(),
+            # ego_off_road_rate=EnvMetrics.OffRoadRateVec(),
             all_collision_rate=EnvMetrics.CollisionRate(),
             ego_coverage=EnvMetrics.OccupancyCoverage(
                 gridinfo={"offset": np.zeros(2), "step": 2.0*np.ones(2)},
@@ -43,6 +43,10 @@ class EnvironmentBuilder(object):
             ego_failure=EnvMetrics.CriticalFailure(num_offroad_frames=2),
             all_failure=EnvMetrics.CriticalFailure(num_offroad_frames=2)
         )
+        if self.eval_cfg.env=="nusc":
+            metrics["ego_off_road_rate"] = EnvMetrics.OffRoadRateVec()
+        elif self.eval_cfg.env=="l5kit":
+            metrics["ego_off_road_rate"] = EnvMetrics.OffRoadRate()
         return metrics
 
     def _get_learned_metrics(self):

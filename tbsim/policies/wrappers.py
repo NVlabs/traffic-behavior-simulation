@@ -120,10 +120,13 @@ class SamplingPolicyWrapper(Wrappers):
         drivable_map = batch_utils().get_drivable_region_map(obs["image"]).float()
         dis_map = calc_distance_map(drivable_map)
         log_likelihood = action_info.get("log_likelihood", None)
-        for map_name in obs["map_names"]:
-            if map_name not in self.vector_maps:
-                self.vector_maps[map_name] = self.mapAPI.get_map(map_name, scene_cache=None)
-        vector_map = [self.vector_maps[map_name] for map_name in obs["map_names"]]
+        if "map_names" in obs:
+            for map_name in obs["map_names"]:
+                if map_name not in self.vector_maps:
+                    self.vector_maps[map_name] = self.mapAPI.get_map(map_name, scene_cache=None)
+            vector_map = [self.vector_maps[map_name] for map_name in obs["map_names"]]
+        else:
+            vector_map = None
         
       
         action_idx = ego_sample_planning(
@@ -270,7 +273,8 @@ class RolloutWrapper(Wrappers):
                         obs["ego"], step_index = step_index)
         if self.agents_policy is not None:
             assert obs["agents"] is not None
-            if obs["agents"]["agent_type"].nelement() == 0:
+            if ("agent_type" in obs["agents"] and obs["agents"]["agent_type"].nelement() == 0) or \
+                ("type" in obs["agents"] and obs["agents"]["type"].nelement() == 0):
                 agents_action=None
                 agents_action_info=None
             else:
