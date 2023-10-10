@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Xu
+    given-names: Danfei
+    orcid: https://orcid.org/0000-0002-8744-3861
+  - family-names: Chen
+    given-names: Yuxiao
+    orcid: https://orcid.org/0000-0001-5276-7156
+  - family-names: Ivanovic
+    given-names: Boris
+    orcid: https://orcid.org/0000-0002-8698-202X
+  - family-names: Pavone
+    given-names: Marco
+    orcid: https://orcid.org/0000-0002-0206-4337
+title: "Traffic Behavior Simulation"
+version: 0.0.1
+date-released: 2023-05-26
