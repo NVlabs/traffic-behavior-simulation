@@ -160,5 +160,4 @@ If you use TBSIM in a scientific publication, we would appreciate using the foll
   year={2023},
   organization={IEEE}
 }
-
 ```
