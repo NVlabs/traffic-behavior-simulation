@@ -147,4 +147,18 @@ python scripts/evaluate.py \
 ```
 
 Here your policy should be declared in `tbsim/evaluation/policy_composer.py`.
+## BibTeX Citation
 
+If you use TBSIM in a scientific publication, we would appreciate using the following citations:
+
+```
+@inproceedings{xu2023bits,
+  title={Bits: Bi-level imitation for traffic simulation},
+  author={Xu, Danfei and Chen, Yuxiao and Ivanovic, Boris and Pavone, Marco},
+  booktitle={2023 IEEE International Conference on Robotics and Automation (ICRA)},
+  pages={2929--2936},
+  year={2023},
+  organization={IEEE}
+}
+
+```
