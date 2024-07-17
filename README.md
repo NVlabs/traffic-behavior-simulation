@@ -127,7 +127,7 @@ python scripts/evaluate.py \
 ```
 The ckpt_yaml file specifies the checkpoints for the spatial planner and predictor, an example can be found at `evaluation/BITS_example.yaml` with pretrained checkpoints.
 
-Pretrained checkpoints can be downloaded at https://www.dropbox.com/sh/vdmy9eq9nlvx0nf/AADpCpvCF2ypLIuvVe1Cizd0a?dl=0.
+Pretrained checkpoints can be downloaded at [link](https://drive.google.com/drive/folders/1y3_HO1c721pFrFOYeGGjORV58g6zNEds?usp=drive_link).
 
 You can check the launch.json file if using VS code.
 
