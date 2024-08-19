@@ -186,6 +186,8 @@ def ego_sample_planning(
         for i,vmap in enumerate(vector_map):
             
             nearby_lanes = vmap.get_lanes_within(world_xyz[i,0,0],30)
+            if len(nearby_lanes)==0:
+                continue
             dis = np.inf*np.ones([len(nearby_lanes)])
             for j,lane in enumerate(nearby_lanes):
                 dx,dy,dh = GeoUtils.batch_proj(world_xyh[i,0,0],lane.center.points[None,...,[0,1,3]])
